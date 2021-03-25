@@ -78,19 +78,19 @@ class Form {
   };
   ```
 
-**Example**
+  **Example**
 
-```javascript
-const findParentNode = function (text) {
-  let parent = null;
-  document.querySelectorAll(".form-control").forEach((item) => {
-    if (item.contains(document.querySelector(text)) === true) {
-      parent = item;
-    }
-  });
-  return parent;
-};
-```
+  ```javascript
+  const findParentNode = function (text) {
+    let parent = null;
+    document.querySelectorAll(".form-control").forEach((item) => {
+      if (item.contains(document.querySelector(text)) === true) {
+        parent = item;
+      }
+    });
+    return parent;
+  };
+  ```
 
 - `createFormControl(selector)`
 
@@ -260,7 +260,3 @@ const findParentNode = function (text) {
   ```javascript
   form.cleanValue();
   ```
-
-```
-
-```
