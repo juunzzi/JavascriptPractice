@@ -2,23 +2,64 @@ class FormControl {
   constructor(element, parent) {
     this.element = element;
     this.parent = parent;
+    this.isPerfect = false;
   }
 }
 class Form {
-  constructor(username, email, password, password2) {
+  constructor(form, username, email, password, password2) {
+    this.form = form;
     this.username = username;
     this.email = email;
     this.password = password;
     this.password2 = password2;
   }
-  print() {
-    console.log(this.username);
-    console.log(this.email);
-    console.log(this.password);
-    console.log(this.password2);
-  }
+
   addKeydownEventListener(element, listener) {
     element.addEventListener("keydown", listener);
+  }
+  addSubmitEventListener(element, listener) {
+    element.addEventListener("submit", listener);
+  }
+  getAllPerfect() {
+    if (!this.username.isPerfect) {
+      this.username.parent.classList.add("error");
+    }
+    if (!this.email.isPerfect) {
+      this.email.parent.classList.add("error");
+    }
+    if (!this.password.isPerfect) {
+      this.password.parent.classList.add("error");
+    }
+    if (!this.password2.isPerfect) {
+      this.password2.parent.classList.add("error");
+    }
+    return (
+      this.username.isPerfect &&
+      this.email.isPerfect &&
+      this.password.isPerfect &&
+      this.password2.isPerfect
+    );
+  }
+  alert() {
+    const result = `
+    Username : ${this.username.element.value}\n
+    Email:${this.email.element.value}\n
+    Password${this.password.element.value}\n
+    Password2:${this.password2.element.value}`;
+    alert(result);
+  }
+  cleanValue() {
+    form.username.element.value = "";
+    form.username.parent.classList.remove("success");
+
+    form.email.element.value = "";
+    form.email.parent.classList.remove("success");
+
+    form.password.element.value = "";
+    form.password.parent.classList.remove("success");
+
+    form.password2.element.value = "";
+    form.password2.parent.classList.remove("success");
   }
 }
 
@@ -50,40 +91,83 @@ const passwordFormControl = createFormControl("#password");
 const password2FormControl = createFormControl("#password2");
 
 const form = new Form(
+  document.querySelector(".form"),
   usernameFormControl,
   emailFormControl,
   passwordFormControl,
   password2FormControl
 );
 form.addKeydownEventListener(form.username.element, (e) => {
-  if (e.target.value.length < 2) {
-    form.username.parent.classList.add("error");
-  } else {
-    form.username.parent.classList.remove("error");
-    form.username.parent.classList.add("success");
-  }
+  setTimeout(() => {
+    if (e.target.value === "") {
+      form.username.parent.classList.remove("error");
+    } else {
+      if (e.target.value.length < 3) {
+        form.username.parent.classList.remove("success");
+        form.username.parent.classList.add("error");
+        form.username.isPerfect = false;
+      } else {
+        form.username.parent.classList.remove("error");
+        form.username.parent.classList.add("success");
+        form.username.isPerfect = true;
+      }
+    }
+  }, 0);
 });
 form.addKeydownEventListener(form.email.element, (e) => {
-  if (e.target.value.length < 2) {
-    form.email.parent.classList.add("error");
-  } else {
-    form.email.parent.classList.remove("error");
-    form.email.parent.classList.add("success");
-  }
+  setTimeout(() => {
+    if (e.target.value.length < 3) {
+      form.email.parent.classList.add("error");
+      form.email.isPerfect = false;
+    } else {
+      form.email.parent.classList.remove("error");
+      form.email.parent.classList.add("success");
+      form.email.isPerfect = true;
+    }
+  }, 0);
 });
 form.addKeydownEventListener(form.password.element, (e) => {
-  if (e.target.value.length < 2) {
-    form.password.parent.classList.add("error");
-  } else {
-    form.password.parent.classList.remove("error");
-    form.password.parent.classList.add("success");
-  }
+  setTimeout(() => {
+    if (e.target.value === "") {
+      form.password.parent.classList.remove("error");
+    } else {
+      if (e.target.value.length < 6) {
+        form.password.parent.classList.remove("success");
+        form.password.parent.classList.add("error");
+        form.password.isPerfect = false;
+      } else {
+        form.password.parent.classList.remove("error");
+
+        form.password.parent.classList.add("success");
+        form.password.isPerfect = true;
+      }
+    }
+  }, 0);
 });
 form.addKeydownEventListener(form.password2.element, (e) => {
-  if (e.target.value.length < 2) {
-    form.password2.parent.classList.add("error");
+  setTimeout(() => {
+    if (e.target.value === "") {
+      form.password2.parent.classList.remove("error");
+    } else {
+      if (e.target.value !== form.password.element.value) {
+        form.password2.parent.classList.remove("success");
+        form.password2.parent.classList.add("error");
+        form.password2.isPerfect = false;
+      } else {
+        form.password2.parent.classList.remove("error");
+        form.password2.parent.classList.add("success");
+        form.password2.isPerfect = true;
+      }
+    }
+  }, 0);
+});
+form.addSubmitEventListener(form.form, (e) => {
+  e.preventDefault();
+
+  if (form.getAllPerfect()) {
+    form.alert();
+    form.cleanValue();
   } else {
-    form.password2.parent.classList.remove("error");
-    form.password2.parent.classList.add("success");
+    alert("바보");
   }
 });
