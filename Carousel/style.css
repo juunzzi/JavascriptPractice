@@ -1,0 +1,17 @@
+.slide_wrap {
+  position: relative;
+  width: 400px;
+  margin: auto;
+  padding-bottom: 30px;
+}
+.slide_box {
+  width: 100%;
+  margin: auto;
+  overflow-x: hidden;
+}
+.slide_content {
+  display: table;
+  float: left;
+  width: 400px;
+  height: 400px;
+}
