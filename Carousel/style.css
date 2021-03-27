@@ -10,8 +10,14 @@
   overflow-x: hidden;
 }
 .slide_content {
-  display: table;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   float: left;
   width: 400px;
   height: 400px;
+  background-color: red;
+}
+.dot_active {
+  background-color: blue;
 }
