@@ -4,6 +4,30 @@ class FormControl {
     this.parent = parent;
     this.isPerfect = false;
   }
+  createValidationListener(checkValidation) {
+    return (e) =>
+      setTimeout(() => {
+        if (e.target.value === "") {
+          this.parent.classList.remove("error");
+        } else {
+          if (checkValidation(e)) {
+            this.parent.classList.remove("success");
+            this.parent.classList.add("error");
+            this.isPerfect = false;
+          } else {
+            this.parent.classList.remove("error");
+            this.parent.classList.add("success");
+            this.isPerfect = true;
+          }
+        }
+      }, 0);
+  }
+  addKeydownEventListener(checkValidation) {
+    this.element.addEventListener(
+      "keydown",
+      this.createValidationListener(checkValidation)
+    );
+  }
 }
 class Form {
   constructor(form, username, email, password, password2) {
@@ -14,9 +38,6 @@ class Form {
     this.password2 = password2;
   }
 
-  addKeydownEventListener(element, listener) {
-    element.addEventListener("keydown", listener);
-  }
   addSubmitEventListener(element, listener) {
     element.addEventListener("submit", listener);
   }
@@ -62,7 +83,7 @@ class Form {
     form.password2.parent.classList.remove("success");
   }
 }
-
+const emailExp = /^([0-9a-zA-Z_-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/i;
 /**
  * 자식 요소의 아이디값으로 부모요소를 찾는다.
  * @method findParentNode
@@ -76,7 +97,6 @@ const findParentNode = function (text) {
   });
   return parent;
 };
-
 /**
  * 아이디 값으로 자식요소와 부모요소를 찾아 FormControl 객체 생성
  * @method createFormControl
@@ -84,12 +104,10 @@ const findParentNode = function (text) {
 const createFormControl = function (text) {
   return new FormControl(document.querySelector(text), findParentNode(text));
 };
-
 const usernameFormControl = createFormControl("#username");
 const emailFormControl = createFormControl("#email");
 const passwordFormControl = createFormControl("#password");
 const password2FormControl = createFormControl("#password2");
-
 const form = new Form(
   document.querySelector(".form"),
   usernameFormControl,
@@ -97,73 +115,14 @@ const form = new Form(
   passwordFormControl,
   password2FormControl
 );
-form.addKeydownEventListener(form.username.element, (e) => {
-  setTimeout(() => {
-    if (e.target.value === "") {
-      form.username.parent.classList.remove("error");
-    } else {
-      if (e.target.value.length < 3) {
-        form.username.parent.classList.remove("success");
-        form.username.parent.classList.add("error");
-        form.username.isPerfect = false;
-      } else {
-        form.username.parent.classList.remove("error");
-        form.username.parent.classList.add("success");
-        form.username.isPerfect = true;
-      }
-    }
-  }, 0);
-});
-form.addKeydownEventListener(form.email.element, (e) => {
-  setTimeout(() => {
-    if (e.target.value.length < 3) {
-      form.email.parent.classList.add("error");
-      form.email.isPerfect = false;
-    } else {
-      form.email.parent.classList.remove("error");
-      form.email.parent.classList.add("success");
-      form.email.isPerfect = true;
-    }
-  }, 0);
-});
-form.addKeydownEventListener(form.password.element, (e) => {
-  setTimeout(() => {
-    if (e.target.value === "") {
-      form.password.parent.classList.remove("error");
-    } else {
-      if (e.target.value.length < 6) {
-        form.password.parent.classList.remove("success");
-        form.password.parent.classList.add("error");
-        form.password.isPerfect = false;
-      } else {
-        form.password.parent.classList.remove("error");
-
-        form.password.parent.classList.add("success");
-        form.password.isPerfect = true;
-      }
-    }
-  }, 0);
-});
-form.addKeydownEventListener(form.password2.element, (e) => {
-  setTimeout(() => {
-    if (e.target.value === "") {
-      form.password2.parent.classList.remove("error");
-    } else {
-      if (e.target.value !== form.password.element.value) {
-        form.password2.parent.classList.remove("success");
-        form.password2.parent.classList.add("error");
-        form.password2.isPerfect = false;
-      } else {
-        form.password2.parent.classList.remove("error");
-        form.password2.parent.classList.add("success");
-        form.password2.isPerfect = true;
-      }
-    }
-  }, 0);
-});
+form.username.addKeydownEventListener((e) => e.target.value.length < 3);
+form.email.addKeydownEventListener((e) => !e.target.value.match(emailExp));
+form.password.addKeydownEventListener((e) => e.target.value.length < 6);
+form.password2.addKeydownEventListener(
+  (e) => e.target.value !== form.password.element.value
+);
 form.addSubmitEventListener(form.form, (e) => {
   e.preventDefault();
-
   if (form.getAllPerfect()) {
     form.alert();
     form.cleanValue();

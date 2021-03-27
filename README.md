@@ -30,7 +30,71 @@ class FormControl {
 
 #### Method
 
-- None
+- `FormControl.addKeydownEventListener(checkValidationFunction)`
+
+  **Description : 검증 함수를 넣으면 해당 객체에 검증알고리즘으로 만들어진 리스너를 넣어 keydown이벤트를 걸어준다**
+
+  **Params : Function**
+
+  **Return : void**
+
+  ```javascript
+  addKeydownEventListener(checkValidation) {
+    this.element.addEventListener(
+      "keydown",
+      this.createValidationListener(checkValidation)
+    );
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  form.username.addKeydownEventListener((e) => e.target.value.length < 3);
+  ```
+
+- `FormControl.createValidationListener(checkValidationFunction)`
+
+  **Description : 검증 함수를 넣으면 리스너를 반환하는 함수이다.**
+
+  **Params : Function**
+
+  **Return : Function**
+
+  ```javascript
+  createValidationListener(checkValidation) {
+    return (e) =>
+      setTimeout(() => {
+        if (e.target.value === "") {
+          this.parent.classList.remove("error");
+        } else {
+          if (checkValidation(e)) {
+            this.parent.classList.remove("success");
+            this.parent.classList.add("error");
+            this.isPerfect = false;
+          } else {
+            this.parent.classList.remove("error");
+            this.parent.classList.add("success");
+            this.isPerfect = true;
+          }
+        }
+      }, 0);
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  /* FormControl 클래스의 addKeydownEventListener로 검증 알고리즘 보내면 */
+  form.username.addKeydownEventListener((e) => e.target.value.length < 3);
+  /* 다음과 같이 검증알고리즘 받아서 createValidationListener함수 실행 */
+  addKeydownEventListener(checkValidation) {
+    this.element.addEventListener(
+      "keydown",
+      this.createValidationListener(checkValidation)
+    );
+  }
+  ```
 
 ### 2. Form Class
 
@@ -57,82 +121,6 @@ class Form {
 - password2 : `FormControl` 객체이며, password2과 관련된 요소
 
 #### Method
-
-- `findParentNode(selector)`
-
-  **Description : 아이디 생성자를 입력받아 부모 노드를 찾는다**
-
-  **Params : String**
-
-  **Return : Node**
-
-  ```javascript
-  const findParentNode = function (text) {
-    let parent = null;
-    document.querySelectorAll(".form-control").forEach((item) => {
-      if (item.contains(document.querySelector(text)) === true) {
-        parent = item;
-      }
-    });
-    return parent;
-  };
-  ```
-
-  **Example**
-
-  ```javascript
-  const findParentNode = function (text) {
-    let parent = null;
-    document.querySelectorAll(".form-control").forEach((item) => {
-      if (item.contains(document.querySelector(text)) === true) {
-        parent = item;
-      }
-    });
-    return parent;
-  };
-  ```
-
-- `createFormControl(selector)`
-
-  **Description : 아이디 생성자를 입력받아 FormControl객체를 생성한다**
-
-  **Params : String**
-
-  **Return : Obejct(FormControl)**
-
-  ```javascript
-  const createFormControl = function (text) {
-    return new FormControl(document.querySelector(text), findParentNode(text));
-  };
-  ```
-
-  **Example**
-
-  ```javascript
-  const usernameFormControl = createFormControl("#username");
-  ```
-
-- `Form.addKeydownEventListener(element,listener)`
-
-  **Description : 요소와 리스너를 받아 키다운 이벤트를 인자요소에 추가한다**
-
-  **Params : Node, Function**
-
-  **Return : None**
-
-  ```javascript
-  addKeydownEventListener(element, listener) {
-    element.addEventListener("keydown", listener);
-  }
-  ```
-
-  **Example**
-
-  ```javascript
-  form.addKeydownEventListener(form.email.element, (e) => {
-    setTimeout(() => {}, 0);
-  });
-  ```
 
 - `Form.addSubmitEventListener(element,listener)`
 
@@ -259,4 +247,60 @@ class Form {
 
   ```javascript
   form.cleanValue();
+  ```
+
+### 3.Global Util Function
+
+- `findParentNode(selector)`
+
+  **Description : 아이디 생성자를 입력받아 부모 노드를 찾는다**
+
+  **Params : String**
+
+  **Return : Node**
+
+  ```javascript
+  const findParentNode = function (text) {
+    let parent = null;
+    document.querySelectorAll(".form-control").forEach((item) => {
+      if (item.contains(document.querySelector(text)) === true) {
+        parent = item;
+      }
+    });
+    return parent;
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  const findParentNode = function (text) {
+    let parent = null;
+    document.querySelectorAll(".form-control").forEach((item) => {
+      if (item.contains(document.querySelector(text)) === true) {
+        parent = item;
+      }
+    });
+    return parent;
+  };
+  ```
+
+- `createFormControl(selector)`
+
+  **Description : 아이디 생성자를 입력받아 FormControl객체를 생성한다**
+
+  **Params : String**
+
+  **Return : Obejct(FormControl)**
+
+  ```javascript
+  const createFormControl = function (text) {
+    return new FormControl(document.querySelector(text), findParentNode(text));
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  const usernameFormControl = createFormControl("#username");
   ```
