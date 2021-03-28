@@ -14,10 +14,12 @@ _이름입력, 이메일입력, 비밀번호입력 등 유사한 폼이 다수 �
 
 ```javascript
 class FormControl {
-  constructor(element, parent) {
+  constructor(element, parent, errorMessage) {
     this.element = element;
     this.parent = parent;
     this.isPerfect = false;
+    this.small = this.parent.querySelector("small");
+    this.errorMessage = errorMessage;
   }
 }
 ```
@@ -27,6 +29,8 @@ class FormControl {
 - element : `input`타입의 노드
 - parent : `input`타입의 부모 `form`태그
 - isPerfect : `input`요소에 타당한 값이 들어갔는지 여부
+- small : `small`태그
+- errorMessage : `small`태그에 넣을 에러메세지
 
 #### Method
 
@@ -194,7 +198,7 @@ class Form {
   }
   ```
 
-- `Form.alert()`
+- ~~`Form.alert()`~~
 
   **Description : 제출 후 결과 값을 출력하는 용도.**
 
@@ -219,7 +223,7 @@ class Form {
   form.alert();
   ```
 
-- `Form.cleanValue()`
+- ~~`Form.cleanValue()`~~
 
   **Description : 제출 후 모든 값을 비우는 용도**
 
