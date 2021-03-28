@@ -1,8 +1,10 @@
 class FormControl {
-  constructor(element, parent) {
+  constructor(element, parent, errorMessage) {
     this.element = element;
     this.parent = parent;
     this.isPerfect = false;
+    this.small = this.parent.querySelector("small");
+    this.errorMessage = errorMessage;
   }
   createValidationListener(checkValidation) {
     return (e) =>
@@ -11,6 +13,7 @@ class FormControl {
           this.parent.classList.remove("error");
         } else {
           if (checkValidation(e)) {
+            this.small.innerText = this.errorMessage;
             this.parent.classList.remove("success");
             this.parent.classList.add("error");
             this.isPerfect = false;
@@ -44,15 +47,27 @@ class Form {
   getAllPerfect() {
     if (!this.username.isPerfect) {
       this.username.parent.classList.add("error");
+      (() =>
+        this.username.element.value === "" &&
+        (this.username.small.innerText = "이름이 필요합니다"))();
     }
     if (!this.email.isPerfect) {
       this.email.parent.classList.add("error");
+      (() =>
+        this.email.element.value === "" &&
+        (this.email.small.innerText = "이메일이 필요합니다"))();
     }
     if (!this.password.isPerfect) {
       this.password.parent.classList.add("error");
+      (() =>
+        this.password.element.value === "" &&
+        (this.password.small.innerText = "비밀번호가 필요합니다"))();
     }
     if (!this.password2.isPerfect) {
       this.password2.parent.classList.add("error");
+      (() =>
+        this.password2.element.value === "" &&
+        (this.password2.small.innerText = "비밀번호2가 필요합니다"))();
     }
     return (
       this.username.isPerfect &&
@@ -60,27 +75,6 @@ class Form {
       this.password.isPerfect &&
       this.password2.isPerfect
     );
-  }
-  alert() {
-    const result = `
-    Username : ${this.username.element.value}\n
-    Email:${this.email.element.value}\n
-    Password${this.password.element.value}\n
-    Password2:${this.password2.element.value}`;
-    alert(result);
-  }
-  cleanValue() {
-    form.username.element.value = "";
-    form.username.parent.classList.remove("success");
-
-    form.email.element.value = "";
-    form.email.parent.classList.remove("success");
-
-    form.password.element.value = "";
-    form.password.parent.classList.remove("success");
-
-    form.password2.element.value = "";
-    form.password2.parent.classList.remove("success");
   }
 }
 const emailExp = /^([0-9a-zA-Z_-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/i;
@@ -101,13 +95,24 @@ const findParentNode = function (text) {
  * 아이디 값으로 자식요소와 부모요소를 찾아 FormControl 객체 생성
  * @method createFormControl
  * @param {String} text 아이디값 */
-const createFormControl = function (text) {
-  return new FormControl(document.querySelector(text), findParentNode(text));
+const createFormControl = function (text, errorMessage) {
+  return new FormControl(
+    document.querySelector(text),
+    findParentNode(text),
+    errorMessage
+  );
 };
-const usernameFormControl = createFormControl("#username");
-const emailFormControl = createFormControl("#email");
-const passwordFormControl = createFormControl("#password");
-const password2FormControl = createFormControl("#password2");
+
+const usernameFormControl = createFormControl("#username", "최소 세 글자 이상");
+const emailFormControl = createFormControl("#email", "타당하지 않은 이메일");
+const passwordFormControl = createFormControl(
+  "#password",
+  "최소 여섯글자 이상"
+);
+const password2FormControl = createFormControl(
+  "#password2",
+  "동일하지 않습니다."
+);
 const form = new Form(
   document.querySelector(".form"),
   usernameFormControl,
@@ -124,9 +129,8 @@ form.password2.addKeydownEventListener(
 form.addSubmitEventListener(form.form, (e) => {
   e.preventDefault();
   if (form.getAllPerfect()) {
-    form.alert();
-    form.cleanValue();
+    console.log("okay");
   } else {
-    alert("바보");
+    console.log("nokay");
   }
 });
