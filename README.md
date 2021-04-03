@@ -4,7 +4,17 @@
 
 리액트를 잘하는 개발자보단 자바스크립트를 잘하는 개발자가 되어보자!!
 
-## Form-Validator
+# 목차
+
+- [FORM-VALIDATOR](#form-validator)
+- [MOVIE-SEAT-BOOKING](#movie-seat-booking)
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+## FORM-VALIDATOR
 
 _이름입력, 이메일입력, 비밀번호입력 등 유사한 폼이 다수 있어 클래스화 하여 개발을 진행하였다._
 
