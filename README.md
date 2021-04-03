@@ -223,6 +223,274 @@ class Form {
   form.alert();
   ```
 
+### 3.Global Util Function
+
+- `findParentNode(selector)`
+
+  **Description : 아이디 생성자를 입력받아 부모 노드를 찾는다**
+
+  **Params : String**
+
+  **Return : Node**
+
+  ```javascript
+  const findParentNode = function (text) {
+    let parent = null;
+    document.querySelectorAll(".form-control").forEach((item) => {
+      if (item.contains(document.querySelector(text)) === true) {
+        parent = item;
+      }
+    });
+    return parent;
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  const findParentNode = function (text) {
+    let parent = null;
+    document.querySelectorAll(".form-control").forEach((item) => {
+      if (item.contains(document.querySelector(text)) === true) {
+        parent = item;
+      }
+    });
+    return parent;
+  };
+  ```
+
+- `createFormControl(selector)`
+
+  **Description : 아이디 생성자를 입력받아 FormControl객체를 생성한다**
+
+  **Params : String**
+
+  **Return : Obejct(FormControl)**
+
+  ```javascript
+  const createFormControl = function (text) {
+    return new FormControl(document.querySelector(text), findParentNode(text));
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  const usernameFormControl = createFormControl("#username");
+  ```
+
+## MOVIE-SEAT-BOOKING
+
+_자바스크립트를 최대한 라이브러리 환경처럼 작동하도록 개발.._
+
+### 1. App Class
+
+#### constructor
+
+```javascript
+class App {
+  app;
+  count;
+  movieValue;
+  selectedSeat;
+  constructor(target) {
+    this.app = target;
+    this.text = this.app.querySelector(".text");
+    this.movie = this.app.querySelector("#movie");
+    this.allSeat = this.app.querySelectorAll(".seat");
+  }
+}
+```
+
+#### Member
+
+- app : 이 앱을 포함하는 가장 큰 상단의 DOM요소를 가져와 이를 통해 하위 자식들 받아온다.
+- count : 영화 좌석 몇 개가 필요한지 (local 저장)
+- movieValue : 영화 좌석 한 개당 가격 (local 저장)
+- selectedSeat : 선택된 자리 번호를 배열로 저장 (local 저장)
+- text : `p`태그 `text`클래스로 선언된
+- movie : `select`태그
+- allSeat : `seat`클래스
+
+#### Method
+
+- `App.init()`
+
+  **Description : 처음 js로드시 바로 실행되는 변수초기화 및 이벤트걸어주는 함수**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  init() {
+    this.getValue();
+    this.setSeatClickEvent();
+    this.setMovieChangeEvent();
+    this.setState(true);
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  new App(document.querySelector("body")).init();
+  ```
+
+- `App.setValue(object object)`
+
+  **Description : 객체를 넣으면 객체안의 속성 값들을 로컬스토리지에 저장하는**
+
+  **Params : Object**
+
+  **Return : void**
+
+  ```javascript
+   setValue({ count, movie, selectedSeat }) {
+    localStorage.setItem("count", count);
+    localStorage.setItem("movieValue", movie);
+    localStorage.setItem("selectedSeat", selectedSeat);
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  this.setValue({
+    count: this.count,
+    movie: this.movie.value,
+    selectedSeat: selectedSeat,
+  });
+  ```
+
+- `App.getValue() `
+
+  **Description : 로컬스토리지에 저장한 값을 모두 받아와 멤버에 저장하는 함수..**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  getValue() {
+    this.count = localStorage.getItem("count") || 0;
+    this.movieValue = localStorage.getItem("movieValue") || 0;
+    this.selectedSeat = JSON.parse(localStorage.getItem("selectedSeat")) || [];
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  this.getValue();
+  ```
+
+- `App.setState(isInitial)`
+
+  **Description : 요소와 리스너를 받아 제출 이벤트를 인자요소에 추가한다**
+
+  **Params : boolean**
+
+  **Return : void**
+
+  ```javascript
+  setState(isInitial) {
+    this.text.querySelectorAll("span")[0].innerHTML = this.count;
+    this.text.querySelectorAll("span")[1].innerHTML =
+      this.count * this.movie.value;
+    if (isInitial) {
+      if (this.selectedSeat) {
+        this.allSeat.forEach((item, index) => {
+          if (this.selectedSeat.some((item) => item === index)) {
+            item.classList.add("selected");
+          }
+        });
+      }
+      if (this.movieValue) {
+        console.log(this.movie.target);
+      }
+    }
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  this.setState(true); // 처음 실행(스테이트 로컬 값으로 초기화 시킬때)
+  this.setState(); // 실행 중에 멤버 값 바꿀때
+  ```
+
+- `App.setSeatClickEvent()`
+
+  **Description : 좌석 요소들에게 클릭이벤트를 걸어준다**
+
+  **Params : void**
+
+  **Return : bool**
+
+  ```javascript
+  setSeatClickEvent() {
+    this.allSeat.forEach(
+      (seat, index) =>
+        seat.classList.value !== "seat occupied" &&
+        seat.addEventListener("click", () => {
+          let selectedSeat =
+            JSON.parse(localStorage.getItem("selectedSeat")) || [];
+          if (seat.classList.value === "seat") {
+            seat.classList.add("selected");
+            this.count++;
+            selectedSeat = JSON.stringify([...selectedSeat, index]);
+          } else if (seat.classList.value === "seat selected") {
+            seat.classList.remove("selected");
+            this.count--;
+            selectedSeat = JSON.stringify(
+              selectedSeat.filter((data) => data !== index)
+            );
+          }
+          this.setState();
+          this.setValue({
+            count: this.count,
+            movie: this.movie.value,
+            selectedSeat: selectedSeat,
+          });
+        })
+    );
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  this.setSeatClickEvent();
+  ```
+
+- `App.setMovieChangeEvent()`
+
+  **Description : `select`의 값이 변할때 마다 변할 핸들러를 걸어준다..**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+   setMovieChangeEvent() {
+    this.movie.addEventListener("change", () => {
+      this.setState();
+      this.setValue({
+        count: this.count,
+        movie: this.movie.value,
+        selectedSeat: localStorage.getItem("selectedSeat"),
+      });
+    });
+  }
+  ```
+
+  **Example**
+
+  ```javascript
+  this.setMovieChangeEvent();
+  ```
+
 - ~~`Form.cleanValue()`~~
 
   **Description : 제출 후 모든 값을 비우는 용도**
