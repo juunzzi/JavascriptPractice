@@ -1,8 +1,8 @@
 class App {
   app;
   count;
-  movieValue;
   selectedSeat;
+  localStorageMovieValue;
   constructor(target) {
     this.app = target;
     this.text = this.app.querySelector(".text");
@@ -17,13 +17,10 @@ class App {
   }
   getValue() {
     this.count = localStorage.getItem("count") || 0;
-    this.movieValue = localStorage.getItem("movieValue") || 0;
+    this.localStorageMovieValue = localStorage.getItem("movieValue") || 10;
     this.selectedSeat = JSON.parse(localStorage.getItem("selectedSeat")) || [];
   }
   setState(isInitial) {
-    this.text.querySelectorAll("span")[0].innerHTML = this.count;
-    this.text.querySelectorAll("span")[1].innerHTML =
-      this.count * this.movie.value;
     if (isInitial) {
       if (this.selectedSeat) {
         this.allSeat.forEach((item, index) => {
@@ -32,10 +29,13 @@ class App {
           }
         });
       }
-      if (this.movieValue) {
-        console.log(this.movie.target);
+      if (this.localStorageMovieValue !== 10) {
+        this.movie.value = this.localStorageMovieValue;
       }
     }
+    this.text.querySelectorAll("span")[0].innerHTML = this.count;
+    this.text.querySelectorAll("span")[1].innerHTML =
+      this.count * this.movie.value;
   }
   setInitState() {}
   setSeatClickEvent() {
@@ -43,24 +43,23 @@ class App {
       (seat, index) =>
         seat.classList.value !== "seat occupied" &&
         seat.addEventListener("click", () => {
-          let selectedSeat =
-            JSON.parse(localStorage.getItem("selectedSeat")) || [];
+          this.getValue();
           if (seat.classList.value === "seat") {
             seat.classList.add("selected");
             this.count++;
-            selectedSeat = JSON.stringify([...selectedSeat, index]);
+            this.selectedSeat = JSON.stringify([...this.selectedSeat, index]);
           } else if (seat.classList.value === "seat selected") {
             seat.classList.remove("selected");
             this.count--;
-            selectedSeat = JSON.stringify(
-              selectedSeat.filter((data) => data !== index)
+            this.selectedSeat = JSON.stringify(
+              this.selectedSeat.filter((data) => data !== index)
             );
           }
           this.setState();
           this.setValue({
             count: this.count,
             movie: this.movie.value,
-            selectedSeat: selectedSeat,
+            selectedSeat: this.selectedSeat,
           });
         })
     );
