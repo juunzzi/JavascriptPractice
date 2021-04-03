@@ -7,27 +7,26 @@ class FormControl {
     this.errorMessage = errorMessage;
   }
   createValidationListener(checkValidation) {
-    return (e) =>
-      setTimeout(() => {
-        if (e.target.value === "") {
-          this.parent.classList.remove("error");
+    return (e) => {
+      if (e.target.value === "") {
+        this.parent.classList.remove("error");
+      } else {
+        if (checkValidation(e)) {
+          this.small.innerText = this.errorMessage;
+          this.parent.classList.remove("success");
+          this.parent.classList.add("error");
+          this.isPerfect = false;
         } else {
-          if (checkValidation(e)) {
-            this.small.innerText = this.errorMessage;
-            this.parent.classList.remove("success");
-            this.parent.classList.add("error");
-            this.isPerfect = false;
-          } else {
-            this.parent.classList.remove("error");
-            this.parent.classList.add("success");
-            this.isPerfect = true;
-          }
+          this.parent.classList.remove("error");
+          this.parent.classList.add("success");
+          this.isPerfect = true;
         }
-      }, 0);
+      }
+    };
   }
   addKeydownEventListener(checkValidation) {
     this.element.addEventListener(
-      "keydown",
+      "keyup",
       this.createValidationListener(checkValidation)
     );
   }
