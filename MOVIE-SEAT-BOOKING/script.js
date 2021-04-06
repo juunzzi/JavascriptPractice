@@ -1,8 +1,4 @@
 class App {
-  app;
-  count;
-  selectedSeat;
-  localStorageMovieValue;
   constructor(target) {
     this.app = target;
     this.text = this.app.querySelector(".text");
@@ -37,7 +33,6 @@ class App {
     this.text.querySelectorAll("span")[1].innerHTML =
       this.count * this.movie.value;
   }
-  setInitState() {}
   setSeatClickEvent() {
     this.allSeat.forEach(
       (seat, index) =>
