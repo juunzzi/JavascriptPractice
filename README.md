@@ -6,9 +6,9 @@
 
 # 목차
 
-- [FORM-VALIDATOR](#form-validator)
-- [MOVIE-SEAT-BOOKING](#movie-seat-booking)
-- [CUSTOM-VIDEO-PLAYER](#custom-video-player)
+- [FORM-VALIDATOR](#FORM-VALIDATOR)
+- [MOVIE-SEAT-BOOKING](#MOVIE-SEAT-BOOKING)
+- [CUSTOM-VIDEO-PLAYER](#CUSTOM-VIDEO-PLAYER)
   <br>
   <br>
   <br>
