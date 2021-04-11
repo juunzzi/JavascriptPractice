@@ -8,13 +8,14 @@
 
 - [FORM-VALIDATOR](#form-validator)
 - [MOVIE-SEAT-BOOKING](#movie-seat-booking)
+- [CUSTOM-VIDEO-PLAYER](#custom-video-player)
   <br>
   <br>
   <br>
   <br>
   <br>
 
-## FORM-VALIDATOR
+## A.FORM-VALIDATOR
 
 _이름입력, 이메일입력, 비밀번호입력 등 유사한 폼이 다수 있어 클래스화 하여 개발을 진행하였다._
 
@@ -289,7 +290,7 @@ class Form {
   const usernameFormControl = createFormControl("#username");
   ```
 
-## MOVIE-SEAT-BOOKING
+## B.MOVIE-SEAT-BOOKING
 
 _자바스크립트를 최대한 라이브러리 환경처럼 작동하도록 개발.._
 
@@ -499,4 +500,134 @@ class App {
 
   ```javascript
   this.setMovieChangeEvent();
+  ```
+
+## C.CUSTOM-VIDEO-PLAYER
+
+_함수형 프로그래밍으로 작성.._
+
+### 1. Script.js
+
+#### Method
+
+- `videoControlsHandler`
+
+  **Description : 컨트롤 부의 버튼과 인풋의 클릭이벤트를 제어하는 핸들러.**
+
+  **Params : event**
+
+  **Return : void**
+
+  ```javascript
+  const videoControlsHandler = function handler(e) {
+    if (e.target === playPauseButton) {
+      if (playPauseButton.className === "fa fa-play fa-2x") {
+        videoStart.apply(playPauseButton);
+      } else if (playPauseButton.className === "fa fa-pause fa-2x") {
+        videoPause();
+      }
+    } else if (e.target === stopButton) {
+      video.currentTime = 0;
+      videoPause();
+    } else if (e.target === videoRange) {
+      video.currentTime = e.target.value;
+      setTimeStamp(e.target.value);
+    }
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  controls.addEventListener("click", videoControlsHandler);
+  ```
+
+- `videoTimeUpdateHandler`
+
+  **Description : 비디오의 재생이 진행되는 동시에 실행되는 핸들러**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  const videoTimeUpdateHandler = () => {
+    videoRange.value = video.currentTime;
+    setTimeStamp(video.currentTime);
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  video.addEventListener("timeupdate", videoTimeUpdateHandler);
+  ```
+
+- `videoStart()`
+
+  **Description : 비디오를 시작하는 함수. 시작과 동시에 이벤트도 추가 버튼이미지도변경**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  const videoStart = function () {
+    this.className = "fa fa-pause fa-2x";
+    videoRange.max = video.duration;
+    video.play();
+    video.addEventListener("timeupdate", videoTimeUpdateHandler);
+    video.addEventListener("ended", videoPause);
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  videoStart.apply(playPauseButton);
+  ```
+
+- `videoPause()`
+
+  **Description : 비디오의 중지 실행.**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  const videoPause = function () {
+    playPauseButton.className = "fa fa-play fa-2x";
+    video.pause();
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  videoPause();
+  ```
+
+- `setTimeStamp ()`
+
+  **Description : 타임스탬프에 글자를 갱신해준다.**
+
+  **Params : videoCurrentTime**
+
+  **Return : void**
+
+  ```javascript
+  const setTimeStamp = (videoCurrentTime) => {
+    const min = Number.parseInt(videoCurrentTime / 60);
+    const sec = Number.parseInt(videoCurrentTime % 60);
+    timeStamp.innerText = `${min < 10 ? `0${min}` : min}:${
+      sec < 10 ? `0${sec}` : sec
+    }`;
+  };
+  ```
+
+  **Example**
+
+  ```javascript
+  setTimeStamp(e.target.value);
   ```
