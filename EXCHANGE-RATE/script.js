@@ -12,14 +12,17 @@ currencyOneSelect.addEventListener("change", () => {
 currencyTwoSelect.addEventListener("change", () => {
   swapButton.click();
 });
+
 swapButton.addEventListener("click", () => {
-  fetch(
-    `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${currencyOneSelect.value}`
-  )
+  fetch(`https://api.exchangerate-api.com/v4/latest/${currencyOneSelect.value}`)
     .then((res) => res.json())
     .then(({ conversion_rates: rates }) => {
       rate.innerText = rates[currencyTwoSelect.value] * currencyOneAmount.value;
       currencyTwoAmount.value =
         rates[currencyTwoSelect.value] * currencyOneAmount.value;
     });
+});
+const input = document.querySelector("#input");
+input.addEventListener("change", (e) => {
+  console.log(e.target.value);
 });
