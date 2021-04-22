@@ -631,3 +631,48 @@ _함수형 프로그래밍으로 작성.._
   ```javascript
   setTimeStamp(e.target.value);
   ```
+
+## C.EXCHANGE-RATE
+
+_함수형 프로그래밍으로 작성.._
+
+### 1. Script.js
+
+#### Method
+
+- `select change listener handler`
+
+  **Description : 환전하려는 화페를 변경하면 실행되는 함수.**
+
+  **Params : event**
+
+  **Return : void**
+
+  ```javascript
+  () => {
+    swapButton.click();
+  };
+  ```
+
+- `swap button click listener handler`
+
+  **Description : 스왑버튼을 클릭하면 실행되는 함수**
+
+  **Params : void**
+
+  **Return : void**
+
+  ```javascript
+  () => {
+    fetch(
+      `https://api.exchangerate-api.com/v4/latest/${currencyOneSelect.value}`
+    )
+      .then((res) => res.json())
+      .then(({ conversion_rates: rates }) => {
+        rate.innerText =
+          rates[currencyTwoSelect.value] * currencyOneAmount.value;
+        currencyTwoAmount.value =
+          rates[currencyTwoSelect.value] * currencyOneAmount.value;
+      });
+  };
+  ```
