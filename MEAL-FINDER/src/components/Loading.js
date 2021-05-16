@@ -6,4 +6,5 @@ export default function Loading({ $app, initialState }) {
 
   this.setState = () => {};
   this.render = () => {};
+  
 }
