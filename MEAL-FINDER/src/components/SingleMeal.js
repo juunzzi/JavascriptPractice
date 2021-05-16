@@ -14,7 +14,7 @@ export default function ({ $app, initialState }) {
       },
       {
         prevState: prevState.singleFood ? prevState.singleFood.idMeal : null,
-        nextState: nextState.singleFood.idMeal,
+        nextState: nextState.singleFood ? nextState.singleFood.idMeal : null,
       }
     );
   };
@@ -22,28 +22,32 @@ export default function ({ $app, initialState }) {
     //
 
     const targetSingleFood = this.state.singleFood;
-    let singleFoodUlTemplate = "";
-    for (let check = 1; check < 21; check++) {
-      if (targetSingleFood[`strIngredient${check}`]) {
-        singleFoodUlTemplate += `<li>${
-          targetSingleFood[`strIngredient${check}`]
-        }</li>`;
+    if (targetSingleFood) {
+      let singleFoodUlTemplate = "";
+      for (let check = 1; check < 21; check++) {
+        if (targetSingleFood[`strIngredient${check}`]) {
+          singleFoodUlTemplate += `<li>${
+            targetSingleFood[`strIngredient${check}`]
+          }</li>`;
+        }
       }
+      this.$target.innerHTML = ` <div class="single-meal">
+      <h1>${targetSingleFood.strMeal}</h1>
+      <img src="${targetSingleFood.strMealThumb}" alt="Steak Diane">
+      <div class="single-meal-info">
+        <p>${targetSingleFood.strCategory}</p>
+        <p>${targetSingleFood.strArea}</p>
+      </div>
+      <div class="main">
+        <p>${targetSingleFood.strInstructions}</p>
+        <h2>Ingredients</h2>
+        <ul>
+        ${singleFoodUlTemplate}
+        </ul>
+      </div>
+    </div>`;
+    } else {
+      this.$target.innerHTML = "";
     }
-    this.$target.innerHTML = ` <div class="single-meal">
-    <h1>${targetSingleFood.strMeal}</h1>
-    <img src="${targetSingleFood.strMealThumb}" alt="Steak Diane">
-    <div class="single-meal-info">
-      <p>${targetSingleFood.strCategory}</p>
-      <p>${targetSingleFood.strArea}</p>
-    </div>
-    <div class="main">
-      <p>${targetSingleFood.strInstructions}</p>
-      <h2>Ingredients</h2>
-      <ul>
-      ${singleFoodUlTemplate}
-      </ul>
-    </div>
-  </div>`;
   };
 }
