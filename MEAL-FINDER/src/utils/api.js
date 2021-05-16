@@ -6,8 +6,8 @@ export const RANDOM_SINGLE_KEY = `random.php`;
  * @param {string | undefined} keyword 검색의 경우 인자로 보내주어야하는 단어
  */
 // async - await
-export const fetcher = async (KEY, keyword = null) => {
-  const url = `https://${API_KEY}${KEY}${keyword}`;
+export const fetcher = async (KEY, keyword) => {
+  const url = `https://${API_KEY}${KEY}${keyword ? keyword : ""}`;
 
   const res = await fetch(url);
   if (!res.ok) {

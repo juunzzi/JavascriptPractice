@@ -1,40 +1,71 @@
-import { fetcher, SEARCH_KEY } from "../utils/api.js";
+import { fetcher, RANDOM_SINGLE_KEY, SEARCH_KEY } from "../utils/api.js";
 import Flex from "./Flex.js";
+import Loading from "./Loading.js";
 import Meals from "./Meals.js";
 import ResultHeading from "./ResultHeading.js";
 import SingleMeal from "./SingleMeal.js";
-
+const cache = {};
 export default function App($app) {
   this.state = {
     meals: [],
     currentFoodKeyword: "",
     singleFood: null,
+    isLoading: false,
   };
   new Flex({
     $app,
     initialState: {},
     onSubmit: async (e) => {
       e.preventDefault();
-      console.log(e.target);
 
       const {
         target: {
           firstChild: { value: food },
         },
       } = e;
-      const newMeals = await fetcher(SEARCH_KEY, food);
-      this.setState({
-        ...this.state,
-        meals: newMeals.meals,
-        currentFoodKeyword: food,
-      });
+      if (cache[food]) {
+        // 캐시있는걸 가져온다.
+        this.setState({
+          ...this.state,
+          meals: cache[food],
+          currentFoodKeyword: food,
+          singleFood: null,
+        });
+      } else {
+        this.setState({ ...this.state, isLoading: true });
+        const newMeals = await fetcher(SEARCH_KEY, food);
+
+        cache[food] = newMeals.meals;
+        this.setState({
+          ...this.state,
+          meals: newMeals.meals,
+          currentFoodKeyword: food,
+          singleFood: null,
+          isLoading: false,
+        });
+      }
 
       e.target.firstChild.value = "";
       //   비동기요청 하고 셋스테이트
     },
-    onRandomButtonHandler: () => {},
+    onRandomButtonHandler: async (e) => {
+      this.setState({ ...this.state, isLoading: true });
+      const {
+        meals: [randomMeal],
+      } = await fetcher(RANDOM_SINGLE_KEY);
+      this.setState({
+        ...this.state,
+        isLoading: false,
+        singleFood: randomMeal,
+        meals: null,
+        currentFoodKeyword: null,
+      });
+    },
   });
-
+  const loading = new Loading({
+    $app,
+    initialState: { isLoading: this.state.isLoading },
+  });
   const resultHeading = new ResultHeading({
     $app,
     initialState: { currentFoodKeyword: this.state.currentFoodKeyword },
@@ -58,16 +89,22 @@ export default function App($app) {
     $app,
     initialState: { singleFood: this.state.singleFood },
   });
+
   this.setState = (nextState) => {
-    const prevState = this.state;
     this.state = nextState;
 
-    meals.setState({ meals: nextState.meals });
+    meals.setState({
+      meals: nextState.meals,
+      currentFoodKeyword: nextState.currentFoodKeyword,
+    });
     resultHeading.setState({
       currentFoodKeyword: nextState.currentFoodKeyword,
     });
     singleMeal.setState({
       singleFood: nextState.singleFood,
+    });
+    loading.setState({
+      isLoading: nextState.isLoading ? true : false,
     });
   };
 }

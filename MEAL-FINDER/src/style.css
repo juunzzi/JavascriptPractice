@@ -17,6 +17,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
+  position: relative;
 }
 
 .flex {
@@ -133,7 +134,13 @@ input[type="text"] {
   padding: 5px;
   margin: 0 5px 5px 0;
 }
-
+.Loading {
+  background-color: red;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  display: flex;
+}
 @media (max-width: 800px) {
   .meals {
     grid-template-columns: repeat(3, 1fr);
