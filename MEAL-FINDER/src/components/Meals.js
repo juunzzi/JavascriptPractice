@@ -23,8 +23,9 @@ export default function Meals({ $app, initialState, onClick }) {
     );
   };
   this.render = () => {
+    console.log(this.state.meals);
     //   스테이트에 있는 비동기 데이터(음식들) div-img 태그들로 다 만들어서 타겟에 innerHTML
-    if (this.state.meals !== null) {
+    if (this.state.meals) {
       // 받아온 데이터가 널이 아니라면 렌더 진행 아니면 이전 상태 그대로임
       const mealsTemplate = this.state.meals
         .map(
@@ -39,6 +40,8 @@ export default function Meals({ $app, initialState, onClick }) {
         .join("");
 
       this.$target.innerHTML = mealsTemplate;
+    } else {
+      this.$target.innerHTML = "";
     }
   };
 }
