@@ -1,10 +1,22 @@
+import shouldComponentUpdate from "../utils/shouldComponentUpdate.js";
+
 export default function ({ $app, initialState }) {
+  this.state = initialState;
   this.$target = document.createElement("div");
   this.$target.setAttribute("id", "single-meal");
   $app.appendChild(this.$target);
   this.setState = (nextState) => {
+    const prevState = this.state;
     this.state = nextState;
-    if (nextState.singleFood !== null) this.render();
+    shouldComponentUpdate(
+      () => {
+        this.render();
+      },
+      {
+        prevState: prevState.singleFood ? prevState.singleFood.idMeal : null,
+        nextState: nextState.singleFood.idMeal,
+      }
+    );
   };
   this.render = () => {
     //
