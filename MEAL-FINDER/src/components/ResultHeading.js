@@ -22,7 +22,11 @@ export default function ResultHeading({ $app, initialState }) {
     );
   };
   this.render = () => {
-    this.$target.innerHTML = `Search results for '${this.state.currentFoodKeyword}':`;
+    if (this.state.currentFoodKeyword) {
+      this.$target.innerHTML = `Search results for '${this.state.currentFoodKeyword}':`;
+    } else {
+      this.$target.innerHTML = "";
+    }
     //   스테이트에 있는 비동기 데이터(음식들) div-img 태그들로 다 만들어서 타겟에 innerHTML
   };
 }
