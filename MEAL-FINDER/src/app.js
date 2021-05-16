@@ -1,6 +1,3 @@
-import { fetcher, SEARCH_KEY } from "./utils/api";
+import App from "./components/App.js";
 
-async function init() {
-  console.log(await fetcher(SEARCH_KEY, "steak"));
-}
-init();
+new App(document.querySelector(".container"));
