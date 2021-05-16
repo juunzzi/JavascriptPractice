@@ -1,12 +1,25 @@
+import shouldComponentUpdate from "../utils/shouldComponentUpdate.js";
+
 export default function ResultHeading({ $app, initialState }) {
+  this.state = initialState;
   this.$target = document.createElement("div");
 
   this.$target.setAttribute("id", "result-heading");
   $app.appendChild(this.$target);
 
   this.setState = (nextState) => {
+    const prevState = this.state;
     this.state = nextState;
-    this.render();
+
+    shouldComponentUpdate(
+      () => {
+        this.render();
+      },
+      {
+        prevState: prevState.currentFoodKeyword,
+        nextState: nextState.currentFoodKeyword,
+      }
+    );
   };
   this.render = () => {
     this.$target.innerHTML = `Search results for '${this.state.currentFoodKeyword}':`;
