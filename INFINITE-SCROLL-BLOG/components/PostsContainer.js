@@ -1,4 +1,5 @@
 import { createElementWithAttribute } from "../utils/createElementWithAttribute.js";
+import { shouldComponentUpdate } from "../utils/shouldComponentUpdate.js";
 
 function PostsContainer({ $app, initialState }) {
   this.$app = $app;
@@ -7,10 +8,19 @@ function PostsContainer({ $app, initialState }) {
     tag: "div",
     attributes: { id: "posts-container" },
   });
+
   this.$app.appendChild(this.$target);
   this.setState = (nextState) => {
-    this.state = nextState;
-    this.render();
+    shouldComponentUpdate(
+      () => {
+        this.state = nextState;
+        this.render();
+      },
+      {
+        prevState: this.state,
+        nextState,
+      }
+    );
   };
   this.render = () => {
     if (this.state.searchWord.length >= 1) {

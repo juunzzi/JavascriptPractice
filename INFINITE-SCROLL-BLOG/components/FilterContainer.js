@@ -9,6 +9,7 @@ function FilterContainer({ $app, initialState, onChange }) {
       class: "filter-container",
     },
   });
+
   this.input = createElementWithAttribute({
     tag: "input",
     attributes: {
@@ -18,6 +19,7 @@ function FilterContainer({ $app, initialState, onChange }) {
       placeholder: "Filter posts...",
     },
   });
+
   this.$target.appendChild(this.input);
   this.$app.appendChild(this.$target);
   this.input.addEventListener("input", onChange);
